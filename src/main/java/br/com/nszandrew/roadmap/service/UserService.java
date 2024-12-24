@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final EmailSender emailSender;
-
+    private final AuthenticationService authenticationService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -84,4 +84,6 @@ public class UserService implements UserDetailsService {
         user.removeProfile(roleChange);
         userRepository.save(user);
     }
+
+
 }

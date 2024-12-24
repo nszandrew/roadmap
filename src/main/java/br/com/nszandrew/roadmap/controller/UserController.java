@@ -6,6 +6,7 @@ import br.com.nszandrew.roadmap.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,12 +34,14 @@ public class UserController {
     }
 
     @PatchMapping("/add-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> addRole(@RequestParam Long id, @RequestParam Role role) {
         userService.changeRole(id, role);
         return new ResponseEntity<>("Cargo alterado com sucesso", HttpStatus.OK);
     }
 
     @PatchMapping("/remove-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> removeRole(@RequestParam Long id, @RequestParam Role role) {
         userService.removeRole(id, role);
         return new ResponseEntity<>("Cargo removido com sucesso", HttpStatus.OK);
