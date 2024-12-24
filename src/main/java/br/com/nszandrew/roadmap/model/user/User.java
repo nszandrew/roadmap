@@ -1,10 +1,9 @@
 package br.com.nszandrew.roadmap.model.user;
 
+import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.Valid;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_user")
@@ -41,12 +41,34 @@ public class User implements UserDetails {
 
     private Boolean active = true;
 
+    private String refreshToken;
+    private LocalDateTime refreshTokenExpiresAt;
+
+    private boolean isVerifyEmail = false;
+    private String verifyToken;
+    private LocalDateTime verifyTokenExpiresAt;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public User(@Valid RegisterRequestDTO data, String password) {
+        this.name = data.name();
+        this.email = data.email();
+        this.password = password;
+        this.planType = PlanType.FREE_TIER;
+        this.active = true;
+        this.isVerifyEmail = false;
+        this.verifyToken = UUID.randomUUID().toString();
+        this.verifyTokenExpiresAt = LocalDateTime.now().plusMinutes(15);
+        this.refreshToken = null;
+        this.refreshTokenExpiresAt = null;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,7 +77,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
@@ -81,5 +103,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    public void verify() {
+        if(verifyTokenExpiresAt.isBefore(LocalDateTime.now())){
+            throw new RuntimeException("Token expirado");
+        }
+        this.isVerifyEmail = true;
+        this.verifyToken = null;
+        this.verifyTokenExpiresAt = null;
     }
 }
