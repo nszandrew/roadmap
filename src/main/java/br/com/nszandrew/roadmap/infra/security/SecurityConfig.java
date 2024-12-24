@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> {
                             req.requestMatchers("/api/login", "/api/register", "/api/refresh-token", "/api/register", "/api/verify-account").permitAll()
+                                    .requestMatchers("/api/add-role", "/api/remove-role").hasRole("ADMIN")
                         .anyRequest().authenticated();
                         })
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
