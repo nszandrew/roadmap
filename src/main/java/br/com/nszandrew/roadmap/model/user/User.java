@@ -120,4 +120,8 @@ public class User implements UserDetails {
         this.verifyToken = null;
         this.verifyTokenExpiresAt = null;
     }
+
+    public void addProfile(UserRole roleChange) {
+        this.userRole.add(roleChange);
+    }
 }
