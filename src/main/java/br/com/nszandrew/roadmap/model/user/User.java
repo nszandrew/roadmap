@@ -124,4 +124,8 @@ public class User implements UserDetails {
     public void addProfile(UserRole roleChange) {
         this.userRole.add(roleChange);
     }
+
+    public void removeProfile(UserRole roleChange) {
+        this.userRole.remove(roleChange);
+    }
 }

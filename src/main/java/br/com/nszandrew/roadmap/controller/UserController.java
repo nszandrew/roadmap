@@ -37,4 +37,10 @@ public class UserController {
         userService.changeRole(id, role);
         return new ResponseEntity<>("Cargo alterado com sucesso", HttpStatus.OK);
     }
+
+    @PatchMapping("/remove-role")
+    public ResponseEntity<String> removeRole(@RequestParam Long id, @RequestParam Role role) {
+        userService.removeRole(id, role);
+        return new ResponseEntity<>("Cargo removido com sucesso", HttpStatus.OK);
+    }
 }

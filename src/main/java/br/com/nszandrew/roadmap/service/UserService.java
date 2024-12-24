@@ -74,4 +74,14 @@ public class UserService implements UserDetailsService {
         user.addProfile(roleChange);
         userRepository.save(user);
     }
+
+    @Transactional
+    public void removeRole(Long id, Role role) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        var roleChange = roleRepository.findByRole(role);
+
+        user.removeProfile(roleChange);
+        userRepository.save(user);
+    }
 }
