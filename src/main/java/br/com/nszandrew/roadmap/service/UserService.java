@@ -2,10 +2,12 @@ package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
 import br.com.nszandrew.roadmap.repository.payment.PaymentRepository;
+import br.com.nszandrew.roadmap.repository.user.RoleRepository;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -25,9 +27,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoadMapRepository roadMapRepository;
-    private final RoadMapItemRepository roadMapItemRepository;
-    private final PaymentRepository paymentRepository;
+    private final RoleRepository roleRepository;
     private final EmailSender emailSender;
 
 
@@ -44,9 +44,11 @@ public class UserService implements UserDetailsService {
         if(user.isPresent()){
             throw new RuntimeException("Email already exists");
         }
+
+        var role = roleRepository.findByRole(Role.PAID_BASIC_TIER);
         var password = passwordEncoder.encode(data.password());
 
-        User newUser = new User(data, password);
+        User newUser = new User(data, password, role);
         userRepository.save(newUser);
 
         emailSender.sendVerifyEmail(newUser);

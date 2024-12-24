@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -51,11 +52,16 @@ public class User implements UserDetails {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public User(@Valid RegisterRequestDTO data, String password) {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<UserRole> userRole = new ArrayList<>();
+
+    public User(@Valid RegisterRequestDTO data, String password, UserRole role) {
         this.name = data.name();
         this.email = data.email();
         this.password = password;
@@ -68,11 +74,12 @@ public class User implements UserDetails {
         this.refreshTokenExpiresAt = null;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
+        this.userRole.add(role);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return userRole;
     }
 
     @Override
