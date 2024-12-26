@@ -9,6 +9,7 @@ import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class UserService {
         return new UserDetailsDTO(user);
     }
 
-
+    @Transactional
     public String editUser(UserUpdateDTO data) {
         User user = authenticationService.getUserAuthenticated();
 

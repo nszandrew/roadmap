@@ -16,14 +16,14 @@ public class AuthenticationService {
     private final RoleHierarchy roleHierarchy;
 
 
-    private boolean userNotHavePermission(User user, String selectedRole) {
+    public boolean userNotHavePermission(User user, String selectedRole) {
         return user.getAuthorities().stream()
                 .flatMap(autoridade -> roleHierarchy.getReachableGrantedAuthorities(List.of(autoridade))
                         .stream())
                 .noneMatch(role -> role.getAuthority().equals(selectedRole));
     }
 
-    private boolean userHasAdminPermission(User user) {
+    public boolean userHasAdminPermission(User user) {
         for(GrantedAuthority authority: user.getAuthorities()){
             var findableAuth =  roleHierarchy.getReachableGrantedAuthorities(List.of(authority));
 
@@ -35,7 +35,7 @@ public class AuthenticationService {
         return false;
     }
 
-    private boolean userHasBasicPermission(User user) {
+    public boolean userHasBasicPermission(User user) {
         for(GrantedAuthority authority: user.getAuthorities()){
             var findableAuth =  roleHierarchy.getReachableGrantedAuthorities(List.of(authority));
 
@@ -47,7 +47,7 @@ public class AuthenticationService {
         return false;
     }
 
-    private boolean userHasPremiumPermission(User user) {
+    public boolean userHasPremiumPermission(User user) {
         for(GrantedAuthority authority: user.getAuthorities()){
             var findableAuth =  roleHierarchy.getReachableGrantedAuthorities(List.of(authority));
 
