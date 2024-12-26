@@ -1,6 +1,10 @@
 package br.com.nszandrew.roadmap.model.roadmap;
 
+import br.com.nszandrew.roadmap.model.dto.CreateRoadMapItem;
+import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapItem;
+import br.com.nszandrew.roadmap.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,6 +29,7 @@ public class RoadMapItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
     private String description;
 
@@ -51,4 +57,32 @@ public class RoadMapItem {
     @ManyToOne
     @JoinColumn(name = "roadmap_id")
     private RoadMap roadMap;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public RoadMapItem(CreateRoadMapItem data, User user) {
+        this.createdAt = LocalDateTime.now();
+        this.title = data.title();
+        this.description = data.description();
+        this.links = new ArrayList<>(data.links());
+        this.orderIndex = data.orderIndex();
+        this.dificulty = data.dificulty();
+        this.duration = data.duration();
+        this.status = MapStatus.NOT_STARTED;
+        this.user = user;
+        this.roadMap = data.roadMap();
+    }
+
+    public void editRoadMapItem(UpdateRoadMapItem data) {
+        this.title = data.title();
+        this.description = data.description();
+        this.links = new ArrayList<>(data.links());
+        this.orderIndex = data.orderIndex();
+        this.status = data.status();
+        this.dificulty = data.dificulty();
+        this.duration = data.duration();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

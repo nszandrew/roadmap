@@ -12,6 +12,7 @@ import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,7 @@ public class RoadMapService {
     private final RoadMapItemRepository roadMapItemRepository;
     private final RoadMapRepository roadMapRepository;
 
-
+    @Transactional
     public String createRoadMap(CreateRoadMapDTO data) {
         User user = authenticationService.getUserAuthenticated();
         boolean userAlreadyHaveRoadmap = roadMapRepository.existsByUserId(user.getId());
@@ -45,6 +46,7 @@ public class RoadMapService {
         return "RoadMap criado com sucesso";
     }
 
+    @Transactional(readOnly = true)
     public RoadMapResponseDTO getRoadMapById(Long id) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findById(id)
@@ -57,16 +59,19 @@ public class RoadMapService {
         return new RoadMapResponseDTO(roadMap, user);
     }
 
-
+    @Transactional(readOnly = true)
     public List<RoadMapResponseDTO> getAllRoadMaps() {
         User user = authenticationService.getUserAuthenticated();
         List<RoadMap> roadMaps = roadMapRepository.findAllByUser(user);
+
+        if(roadMaps.isEmpty()){throw new CustomException("Nao ha roadmaps cadastrados para esse usuario");}
 
         return roadMaps.stream()
                 .map(roadMap -> new RoadMapResponseDTO(roadMap, user))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public RoadMapResponseDTO updateRoadMap(Long id, UpdateRoadMapDTO data) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findByIdAndUser(id, user);
@@ -83,6 +88,7 @@ public class RoadMapService {
         return new RoadMapResponseDTO(roadMap, user);
     }
 
+    @Transactional
     public String deleteRoadMap(Long id) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findByIdAndUser(id, user);

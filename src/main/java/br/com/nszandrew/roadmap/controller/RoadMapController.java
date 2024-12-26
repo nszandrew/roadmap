@@ -4,6 +4,7 @@ import br.com.nszandrew.roadmap.model.dto.CreateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.dto.RoadMapResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.service.RoadMapService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class RoadMapController {
     }
 
     @PostMapping("/createroadmap")
-    public ResponseEntity<String> createRoadMap(@RequestBody CreateRoadMapDTO data){
+    public ResponseEntity<String> createRoadMap(@RequestBody @Valid CreateRoadMapDTO data){
         return new ResponseEntity<>(roadMapService.createRoadMap(data), HttpStatus.CREATED);
     }
 
@@ -36,7 +37,7 @@ public class RoadMapController {
     }
 
     @PutMapping("/updateroadmap/{id}")
-    public ResponseEntity<RoadMapResponseDTO> updateRoadMap(@PathVariable Long id, @RequestBody UpdateRoadMapDTO data){
+    public ResponseEntity<RoadMapResponseDTO> updateRoadMap(@PathVariable Long id, @RequestBody @Valid UpdateRoadMapDTO data){
         return new ResponseEntity<>(roadMapService.updateRoadMap(id, data), HttpStatus.OK);
     }
 
