@@ -1,6 +1,7 @@
 package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
+import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
 import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.model.user.User;
@@ -42,7 +43,7 @@ public class UserService implements UserDetailsService {
         Optional<User> user = userRepository.findByEmailIgnoreCaseAndIsVerifyEmailTrue(data.email());
 
         if(user.isPresent()){
-            throw new RuntimeException("Email already exists");
+            throw new CustomException("Email already exists");
         }
 
         var role = roleRepository.findByRole(Role.PAID_BASIC_TIER);
@@ -58,7 +59,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void verifyEmail(String code) {
         var user = userRepository.findByVerifyToken(code)
-                .orElseThrow(() -> new RuntimeException("Code is valid"));
+                .orElseThrow(() -> new CustomException("Code is valid"));
 
         user.verify();
         userRepository.save(user);
@@ -68,7 +69,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void changeRole(Long id, Role role) {
         var user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
 
         user.addProfile(roleChange);
@@ -78,7 +79,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void removeRole(Long id, Role role) {
         var user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
 
         user.removeProfile(roleChange);
