@@ -1,90 +1,49 @@
 package br.com.nszandrew.roadmap.service;
 
-import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
-import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
-import br.com.nszandrew.roadmap.model.user.Role;
+import br.com.nszandrew.roadmap.model.dto.UserDetailsDTO;
+import br.com.nszandrew.roadmap.model.dto.UserUpdateDTO;
 import br.com.nszandrew.roadmap.model.user.User;
-import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
-import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
-import br.com.nszandrew.roadmap.repository.payment.PaymentRepository;
 import br.com.nszandrew.roadmap.repository.user.RoleRepository;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.MailSender;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final EmailSender emailSender;
     private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmailIgnoreCaseAndIsVerifyEmailTrue(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    /*
+    Necessita adicionar mais parametros para retorno como RoadMaps/RoadmapsItens e os Roles
+     */
+    public UserDetailsDTO getUser() {
+        User user = authenticationService.getUserAuthenticated();
+        userRepository.findById(user.getId()).orElseThrow(() -> new CustomException("User not found"));
+
+        return new UserDetailsDTO(user);
     }
 
-    @Transactional
-    public String register(@Valid RegisterRequestDTO data) {
-        Optional<User> user = userRepository.findByEmailIgnoreCaseAndIsVerifyEmailTrue(data.email());
 
-        if(user.isPresent()){
-            throw new CustomException("Email already exists");
+    public String editUser(UserUpdateDTO data) {
+        User user = authenticationService.getUserAuthenticated();
+
+        if(data.currentPassword().isBlank() && data.newPassword().isBlank()) {
+            user.updateUser(data);
+            userRepository.save(user);
+            return "Usuário editado com sucesso";
+        } else {
+            if (!passwordEncoder.matches(data.currentPassword(), user.getPassword())) {
+                throw new CustomException("Senha atual incorreta");
+            }
+            user.updateUser(data, passwordEncoder.encode(data.newPassword()));
+            userRepository.save(user);
+            return "Usuário editado com sucesso";
         }
-
-        var role = roleRepository.findByRole(Role.PAID_BASIC_TIER);
-        var password = passwordEncoder.encode(data.password());
-
-        User newUser = new User(data, password, role);
-        userRepository.save(newUser);
-
-        emailSender.sendVerifyEmail(newUser);
-        return "Usuario criado com sucesso!";
     }
-
-    @Transactional
-    public void verifyEmail(String code) {
-        var user = userRepository.findByVerifyToken(code)
-                .orElseThrow(() -> new CustomException("Code is valid"));
-
-        user.verify();
-        userRepository.save(user);
-
-    }
-
-    @Transactional
-    public void changeRole(Long id, Role role) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException("User not found"));
-        var roleChange = roleRepository.findByRole(role);
-
-        user.addProfile(roleChange);
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void removeRole(Long id, Role role) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException("User not found"));
-        var roleChange = roleRepository.findByRole(role);
-
-        user.removeProfile(roleChange);
-        userRepository.save(user);
-    }
-
-
 }

@@ -4,6 +4,7 @@ import br.com.nszandrew.roadmap.model.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,6 +57,10 @@ public class AuthenticationService {
             }
         }
         return false;
+    }
+
+    public User getUserAuthenticated() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

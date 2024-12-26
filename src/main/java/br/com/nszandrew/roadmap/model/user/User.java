@@ -1,6 +1,7 @@
 package br.com.nszandrew.roadmap.model.user;
 
 import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.UserUpdateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
@@ -127,5 +128,18 @@ public class User implements UserDetails {
 
     public void removeProfile(UserRole roleChange) {
         this.userRole.remove(roleChange);
+    }
+
+    public void updateUser(UserUpdateDTO data) {
+        this.name = data.name();
+        this.active = data.active();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateUser(UserUpdateDTO data, String password) {
+        this.name = data.name();
+        this.password = password;
+        this.active = data.active();
+        this.updatedAt = LocalDateTime.now();
     }
 }
