@@ -15,6 +15,6 @@ public record CreateRoadMapItem(@NotNull
                                 Integer dificulty,
                                 String duration,
                                 @NotNull
-                                RoadMap roadMap) {
+                                Long roadMapId) {
 
 }

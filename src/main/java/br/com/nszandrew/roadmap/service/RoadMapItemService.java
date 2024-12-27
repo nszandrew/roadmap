@@ -26,7 +26,7 @@ public class RoadMapItemService {
     @Transactional
     public String createRoadMapItem(CreateRoadMapItem data) {
         User user = authenticationService.getUserAuthenticated();
-        roadMapRepository.findById(data.roadMap().getId())
+        RoadMap rdm = roadMapRepository.findById(data.roadMapId())
                 .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
 
         boolean userHas20RMI = userHas20RoadmapItems(user);
@@ -34,7 +34,7 @@ public class RoadMapItemService {
             throw new CustomException("Usuário ja excedeu o limite de itens no seu roadmap no plano atual");
         }
 
-        RoadMapItem roadMapItem = new RoadMapItem(data, user);
+        RoadMapItem roadMapItem = new RoadMapItem(data, user, rdm);
         roadMapItemRepository.save(roadMapItem);
         return "RoadMapItem criado com sucesso";
     }

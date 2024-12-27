@@ -1,16 +1,15 @@
 package br.com.nszandrew.roadmap.controller;
 
+import br.com.nszandrew.roadmap.model.dto.user.LoginDTO;
 import br.com.nszandrew.roadmap.model.dto.user.TokenResponseDTO;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import br.com.nszandrew.roadmap.service.TokenService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -27,18 +26,24 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestParam String email, @RequestParam String password) {
-        var authToken = new UsernamePasswordAuthenticationToken(email, password);
-        var authentication = authenticationManager.authenticate(authToken);
-        User user = (User) authentication.getPrincipal();
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody LoginDTO data) {
+        try {
+            var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+            var authentication = authenticationManager.authenticate(authToken);
+            User user = (User) authentication.getPrincipal();
 
-        String acessToken = tokenService.generateToken((User) authentication.getPrincipal());
-        String refreshToken = tokenService.generateRefreshToken((User) authentication.getPrincipal());
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
+            String acessToken = tokenService.generateToken(user);
+            String refreshToken = tokenService.generateRefreshToken(user);
+            user.setRefreshToken(refreshToken);
+            userRepository.save(user);
 
-        return ResponseEntity.ok(new TokenResponseDTO(acessToken, refreshToken));
+            return ResponseEntity.ok(new TokenResponseDTO(acessToken, refreshToken));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new TokenResponseDTO("Erro: " + e.getMessage(), null));
+        }
     }
+
 
     @PostMapping("/refresh-token")
     public ResponseEntity<TokenResponseDTO> refreshToken(@RequestParam String refreshToken) {

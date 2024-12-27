@@ -61,7 +61,7 @@ public class RoadMapItem {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public RoadMapItem(CreateRoadMapItem data, User user) {
+    public RoadMapItem(CreateRoadMapItem data, User user, RoadMap roadMap) {
         this.createdAt = LocalDateTime.now();
         this.title = data.title();
         this.description = data.description();
@@ -71,7 +71,7 @@ public class RoadMapItem {
         this.duration = data.duration();
         this.status = MapStatus.NOT_STARTED;
         this.user = user;
-        this.roadMap = data.roadMap();
+        this.roadMap = roadMap;
     }
 
     public void editRoadMapItem(UpdateRoadMapItem data) {
