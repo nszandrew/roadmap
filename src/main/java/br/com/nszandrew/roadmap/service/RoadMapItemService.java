@@ -1,15 +1,14 @@
 package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
-import br.com.nszandrew.roadmap.model.dto.CreateRoadMapItem;
-import br.com.nszandrew.roadmap.model.dto.RoadMapItemResponse;
-import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapItem;
+import br.com.nszandrew.roadmap.model.dto.roadmapitem.CreateRoadMapItem;
+import br.com.nszandrew.roadmap.model.dto.roadmapitem.RoadMapItemResponse;
+import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

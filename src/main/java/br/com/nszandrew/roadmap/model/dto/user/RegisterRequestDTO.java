@@ -1,4 +1,4 @@
-package br.com.nszandrew.roadmap.model.dto;
+package br.com.nszandrew.roadmap.model.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

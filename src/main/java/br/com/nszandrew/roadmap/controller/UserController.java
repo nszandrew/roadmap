@@ -1,7 +1,7 @@
 package br.com.nszandrew.roadmap.controller;
 
-import br.com.nszandrew.roadmap.model.dto.UserDetailsDTO;
-import br.com.nszandrew.roadmap.model.dto.UserUpdateDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserUpdateDTO;
 import br.com.nszandrew.roadmap.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

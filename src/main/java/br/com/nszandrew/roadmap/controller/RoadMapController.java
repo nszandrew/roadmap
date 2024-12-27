@@ -1,8 +1,8 @@
 package br.com.nszandrew.roadmap.controller;
 
-import br.com.nszandrew.roadmap.model.dto.CreateRoadMapDTO;
-import br.com.nszandrew.roadmap.model.dto.RoadMapResponseDTO;
-import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.CreateRoadMapDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.service.RoadMapService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

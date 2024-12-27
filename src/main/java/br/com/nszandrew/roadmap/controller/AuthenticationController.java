@@ -1,6 +1,6 @@
 package br.com.nszandrew.roadmap.controller;
 
-import br.com.nszandrew.roadmap.model.dto.TokenResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.user.TokenResponseDTO;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import br.com.nszandrew.roadmap.service.TokenService;

@@ -1,4 +1,4 @@
-package br.com.nszandrew.roadmap.model.dto;
+package br.com.nszandrew.roadmap.model.dto.roadmapitem;
 
 import br.com.nszandrew.roadmap.model.roadmap.MapStatus;
 

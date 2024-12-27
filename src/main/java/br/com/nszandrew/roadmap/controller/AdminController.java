@@ -1,6 +1,6 @@
 package br.com.nszandrew.roadmap.controller;
 
-import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
 import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.service.AdminService;
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package br.com.nszandrew.roadmap.model.dto;
+package br.com.nszandrew.roadmap.model.dto.user;
 
 import br.com.nszandrew.roadmap.model.user.User;
 

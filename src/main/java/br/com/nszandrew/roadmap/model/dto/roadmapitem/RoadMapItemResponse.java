@@ -1,5 +1,6 @@
-package br.com.nszandrew.roadmap.model.dto;
+package br.com.nszandrew.roadmap.model.dto.roadmapitem;
 
+import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
 import br.com.nszandrew.roadmap.model.roadmap.MapStatus;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
 import br.com.nszandrew.roadmap.model.user.User;

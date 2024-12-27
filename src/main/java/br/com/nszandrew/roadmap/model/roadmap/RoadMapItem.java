@@ -1,10 +1,9 @@
 package br.com.nszandrew.roadmap.model.roadmap;
 
-import br.com.nszandrew.roadmap.model.dto.CreateRoadMapItem;
-import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapItem;
+import br.com.nszandrew.roadmap.model.dto.roadmapitem.CreateRoadMapItem;
+import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
 import br.com.nszandrew.roadmap.model.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,7 @@ package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
-import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
 import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.RoleRepository;

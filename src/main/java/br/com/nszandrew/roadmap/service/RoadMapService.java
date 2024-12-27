@@ -1,9 +1,9 @@
 package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
-import br.com.nszandrew.roadmap.model.dto.CreateRoadMapDTO;
-import br.com.nszandrew.roadmap.model.dto.RoadMapResponseDTO;
-import br.com.nszandrew.roadmap.model.dto.UpdateRoadMapDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.CreateRoadMapDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
 import br.com.nszandrew.roadmap.model.user.User;

@@ -1,7 +1,7 @@
 package br.com.nszandrew.roadmap.model.user;
 
-import br.com.nszandrew.roadmap.model.dto.RegisterRequestDTO;
-import br.com.nszandrew.roadmap.model.dto.UserUpdateDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserUpdateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;

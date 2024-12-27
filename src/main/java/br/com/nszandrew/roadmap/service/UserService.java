@@ -1,8 +1,8 @@
 package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
-import br.com.nszandrew.roadmap.model.dto.UserDetailsDTO;
-import br.com.nszandrew.roadmap.model.dto.UserUpdateDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserUpdateDTO;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.RoleRepository;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
