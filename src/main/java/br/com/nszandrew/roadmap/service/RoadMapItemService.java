@@ -9,18 +9,15 @@ import br.com.nszandrew.roadmap.model.dto.roadmapitem.RoadMapItemResponse;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
+import br.com.nszandrew.roadmap.model.user.PlanType;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -120,9 +117,19 @@ public class RoadMapItemService {
 
     @Transactional
     public String generateWithAI(GPTCreateRoadMapItemRequestDTO dto, Long roadmapId) {
+
         User user = authenticationService.getUserAuthenticated();
+        if(user.getPlanType() == PlanType.FREE_TIER){
+            throw new CustomException("Usuário nao tem permissao para gerar RoadMaps");
+        }
+
         RoadMap roadMap = roadMapRepository.findById(roadmapId)
                 .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+
+        if(!roadMap.getUser().getId().equals(user.getId())){
+            throw new CustomException("RoadMap informado nao pertence ao usuário");
+        }
+
         try {
             GPTResponseDTO response = openAiService.generateRoadMap(dto);
 

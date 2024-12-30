@@ -85,7 +85,7 @@ public class OpenAiService {
     }
 
     /**
-     * Constrói o prompt (role=system) usando o modelo que você definiu.
+     * Constrói o prompt (role=system).
      */
     private String buildSystemPrompt(GPTCreateRoadMapItemRequestDTO dto) {
         StringBuilder sb = new StringBuilder();

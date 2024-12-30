@@ -3,6 +3,7 @@ package br.com.nszandrew.roadmap.service;
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.user.PlanType;
 import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.RoleRepository;
@@ -67,6 +68,20 @@ public class AdminService implements UserDetailsService {
                 .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
 
+        if(user.getPlanType() == PlanType.FREE_TIER){
+            if(role == Role.PAID_BASIC_TIER){user.setPlanType(PlanType.BASIC_TIER);}
+            if(role == Role.PAID_PREMIUM_TIER){user.setPlanType(PlanType.PREMIUM_TIER);}
+        }
+
+        if(user.getPlanType() == PlanType.BASIC_TIER){
+            if(role == Role.PAID_PREMIUM_TIER){user.setPlanType(PlanType.PREMIUM_TIER);}
+            if(role == Role.PAID_BASIC_TIER){user.setPlanType(PlanType.BASIC_TIER);}
+        }
+
+        if(role == Role.ADMIN){
+            user.setPlanType(PlanType.PREMIUM_TIER);
+        }
+
         user.addProfile(roleChange);
         userRepository.save(user);
     }
@@ -77,6 +92,7 @@ public class AdminService implements UserDetailsService {
                 .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
 
+        user.setPlanType(PlanType.FREE_TIER);
         user.removeProfile(roleChange);
         userRepository.save(user);
     }

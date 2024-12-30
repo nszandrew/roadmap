@@ -13,6 +13,7 @@ public record RoadMapItemResponse(Long id,
                                   String description,
                                   MapStatus status,
                                   List<String> links,
+                                  boolean generateByIA,
                                   Integer orderIndex,
                                   Integer dificulty,
                                   String duration,
@@ -22,7 +23,8 @@ public record RoadMapItemResponse(Long id,
     public RoadMapItemResponse(RoadMapItem roadMapItem, User user) {
         this(roadMapItem.getId(), roadMapItem.getTitle(),
                 roadMapItem.getDescription(), roadMapItem.getStatus(),
-                roadMapItem.getLinks(), roadMapItem.getOrderIndex(),
+                roadMapItem.getLinks(), roadMapItem.getGenerateByIA(),
+                roadMapItem.getOrderIndex(),
                 roadMapItem.getDificulty(), roadMapItem.getDuration(),
                 roadMapItem.getCreatedAt(), new UserDetailsDTO(user));
     }

@@ -49,6 +49,9 @@ public class RoadMapItem {
 
     private String comment;
 
+    @Column(nullable = false, updatable = false)
+    private Boolean generateByIA;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -73,6 +76,7 @@ public class RoadMapItem {
         this.dificulty = data.dificulty();
         this.duration = data.duration();
         this.status = MapStatus.NOT_STARTED;
+        this.generateByIA = false;
         this.user = user;
         this.roadMap = roadMap;
     }
@@ -86,6 +90,7 @@ public class RoadMapItem {
         this.dificulty = data.dificulty();
         this.comment = data.comment();
         this.duration = data.duration();
+        this.generateByIA = true;
         this.status = MapStatus.NOT_STARTED;
         this.user = user;
         this.roadMap = roadMap;
@@ -98,6 +103,7 @@ public class RoadMapItem {
         this.orderIndex = data.orderIndex();
         this.status = data.status();
         this.dificulty = data.dificulty();
+        this.generateByIA = false;
         this.duration = data.duration();
         this.updatedAt = LocalDateTime.now();
     }
