@@ -38,10 +38,8 @@ public class OpenAiService {
     }
 
     public GPTResponseDTO generateRoadMap(GPTCreateRoadMapItemRequestDTO requestDTO) {
-        // 1) Montar o 'prompt' usando o "System" ou "User" role do ChatGPT
         String systemPrompt = buildSystemPrompt(requestDTO);
 
-        // 2) Criar o request body da API de chat
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", openAiModel);
 

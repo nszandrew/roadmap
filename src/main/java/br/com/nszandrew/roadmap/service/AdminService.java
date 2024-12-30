@@ -3,6 +3,7 @@ package br.com.nszandrew.roadmap.service;
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
 import br.com.nszandrew.roadmap.model.user.PlanType;
 import br.com.nszandrew.roadmap.model.user.Role;
 import br.com.nszandrew.roadmap.model.user.User;
@@ -11,12 +12,14 @@ import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ public class AdminService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final EmailSender emailSender;
+    private final AuthenticationService authenticationService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -64,6 +68,7 @@ public class AdminService implements UserDetailsService {
 
     @Transactional
     public void changeRole(Long id, Role role) {
+        verifyIfIsAdmin();
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
@@ -88,6 +93,7 @@ public class AdminService implements UserDetailsService {
 
     @Transactional
     public void removeRole(Long id, Role role) {
+        verifyIfIsAdmin();
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException("User not found"));
         var roleChange = roleRepository.findByRole(role);
@@ -98,4 +104,17 @@ public class AdminService implements UserDetailsService {
     }
 
 
+    public List<UserDetailsDTO> getAllUsers() {
+        verifyIfIsAdmin();
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserDetailsDTO(user))
+                .toList();
+    }
+
+    private void verifyIfIsAdmin() {
+        if(Boolean.FALSE.equals(authenticationService.userHasAdminPermission(authenticationService.getUserAuthenticated()))){
+            throw new CustomException("Acesso negado");
+        }
+    }
 }

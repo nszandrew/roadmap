@@ -34,7 +34,7 @@ public class SecurityConfig {
                             req.requestMatchers( "/api/refresh-token", "/api/register", "/api/verify-account").permitAll()
                                     .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
-                                    .requestMatchers("/api/add-role", "/api/remove-role").hasRole("ADMIN")
+                                    .requestMatchers("/api/add-role", "/api/remove-role", "/api/getallusers").hasRole("ADMIN")
                         .anyRequest().authenticated();
                         })
                 .csrf(AbstractHttpConfigurer::disable)
