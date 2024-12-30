@@ -1,5 +1,6 @@
 package br.com.nszandrew.roadmap.controller;
 
+import br.com.nszandrew.roadmap.model.dto.openai.GPTCreateRoadMapItemRequestDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.CreateRoadMapItem;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.RoadMapItemResponse;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
@@ -21,7 +22,12 @@ public class RoadMapItemController {
         this.roadMapItemService = roadMapItemService;
     }
 
-    @PostMapping("/roadmapitem/create")
+    @PostMapping("/roadmap/{roadmapId}/generate/")
+    public ResponseEntity<String> generateRoadMap(@RequestBody GPTCreateRoadMapItemRequestDTO dto, @PathVariable Long roadmapId) {
+        return new ResponseEntity<>(roadMapItemService.generateWithAI(dto, roadmapId), HttpStatus.CREATED);
+    }
+
+        @PostMapping("/roadmapitem/create")
     public ResponseEntity<String> createRoadMapItem(@RequestBody @Valid CreateRoadMapItem data){
         return new ResponseEntity<>(roadMapItemService.createRoadMapItem(data), HttpStatus.CREATED);
     }

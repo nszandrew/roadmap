@@ -1,5 +1,6 @@
 package br.com.nszandrew.roadmap.model.roadmap;
 
+import br.com.nszandrew.roadmap.model.dto.openai.GPTRoadMapItemDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.CreateRoadMapItem;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
 import br.com.nszandrew.roadmap.model.user.User;
@@ -46,6 +47,8 @@ public class RoadMapItem {
     @Enumerated(EnumType.STRING)
     private MapStatus status;
 
+    private String comment;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -68,6 +71,20 @@ public class RoadMapItem {
         this.links = new ArrayList<>(data.links());
         this.orderIndex = data.orderIndex();
         this.dificulty = data.dificulty();
+        this.duration = data.duration();
+        this.status = MapStatus.NOT_STARTED;
+        this.user = user;
+        this.roadMap = roadMap;
+    }
+
+    public RoadMapItem(GPTRoadMapItemDTO data, User user, RoadMap roadMap) {
+        this.createdAt = LocalDateTime.now();
+        this.title = data.title();
+        this.description = data.description();
+        this.links = new ArrayList<>(data.links());
+        this.orderIndex = data.orderIndex();
+        this.dificulty = data.dificulty();
+        this.comment = data.comment();
         this.duration = data.duration();
         this.status = MapStatus.NOT_STARTED;
         this.user = user;

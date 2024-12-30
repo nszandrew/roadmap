@@ -1,6 +1,9 @@
 package br.com.nszandrew.roadmap.service;
 
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
+import br.com.nszandrew.roadmap.model.dto.openai.GPTCreateRoadMapItemRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.openai.GPTResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.openai.GPTRoadMapItemDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.CreateRoadMapItem;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.RoadMapItemResponse;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
@@ -10,10 +13,14 @@ import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +29,7 @@ public class RoadMapItemService {
     private final AuthenticationService authenticationService;
     private final RoadMapItemRepository roadMapItemRepository;
     private final RoadMapRepository roadMapRepository;
+    private final OpenAiService openAiService;
 
     @Transactional
     public String createRoadMapItem(CreateRoadMapItem data) {
@@ -108,5 +116,26 @@ public class RoadMapItemService {
 
         roadMapItemRepository.delete(roadMapItem);
         return "RoadMap Item removido com sucesso";
+    }
+
+    @Transactional
+    public String generateWithAI(GPTCreateRoadMapItemRequestDTO dto, Long roadmapId) {
+        User user = authenticationService.getUserAuthenticated();
+        RoadMap roadMap = roadMapRepository.findById(roadmapId)
+                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+        try {
+            GPTResponseDTO response = openAiService.generateRoadMap(dto);
+
+            for (GPTRoadMapItemDTO itemDTO : response.roadmapitem()) {
+                RoadMapItem entity = new RoadMapItem(itemDTO, user, roadMap);
+                roadMapItemRepository.save(entity);
+            }
+
+            return "Gerado e salvo com sucesso";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CustomException("Erro ao gerar RoadMapItem com IA: " + e.getMessage());
+        }
     }
 }

@@ -1,4 +1,4 @@
-package br.com.nszandrew.roadmap.model.dto.roadmapitem;
+package br.com.nszandrew.roadmap.model.dto.openai;
 
 import br.com.nszandrew.roadmap.model.roadmap.LevelUser;
 import jakarta.validation.constraints.NotNull;
