@@ -14,7 +14,7 @@ public class ExeceptionHandler {
 
     // 400 - Excessao customizada
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+    public ResponseEntity<ErrorResponse> handleCustomExceptionException(
             CustomException ex, WebRequest request) {
         ErrorResponse error = new ErrorResponse(
                 ex.getMessage(),
@@ -22,6 +22,18 @@ public class ExeceptionHandler {
                 request.getDescription(false)
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // 403 - Excessao customizada
+    @ExceptionHandler(PlanLimitException.class)
+    public ResponseEntity<ErrorResponse> handlePlanLimitException(
+            CustomException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(),
+                HttpStatus.FORBIDDEN.value(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     // 403 - Regra de negócio violada

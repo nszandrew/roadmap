@@ -17,4 +17,5 @@ public interface RoadMapItemRepository extends JpaRepository<RoadMapItem, Long> 
     long countRoadmapItemsByUser(@Param("user") User user);
 
     List<RoadMapItem> findAllByRoadMap(RoadMap roadMap);
+
 }

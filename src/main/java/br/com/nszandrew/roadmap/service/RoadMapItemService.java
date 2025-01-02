@@ -9,7 +9,6 @@ import br.com.nszandrew.roadmap.model.dto.roadmapitem.RoadMapItemResponse;
 import br.com.nszandrew.roadmap.model.dto.roadmapitem.UpdateRoadMapItem;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
-import br.com.nszandrew.roadmap.model.user.PlanType;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapItemRepository;
 import br.com.nszandrew.roadmap.repository.Roadmap.RoadMapRepository;
@@ -27,6 +26,7 @@ public class RoadMapItemService {
     private final RoadMapItemRepository roadMapItemRepository;
     private final RoadMapRepository roadMapRepository;
     private final OpenAiService openAiService;
+    private final PlanLimitService planLimitService;
 
     @Transactional
     public String createRoadMapItem(CreateRoadMapItem data) {
@@ -34,10 +34,7 @@ public class RoadMapItemService {
         RoadMap rdm = roadMapRepository.findById(data.roadMapId())
                 .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
 
-        boolean userHas20RMI = userHas20RoadmapItems(user);
-        if(userHas20RMI && (!authenticationService.userHasPremiumPermission(user) || !authenticationService.userHasBasicPermission(user))){
-            throw new CustomException("Usuário ja excedeu o limite de itens no seu roadmap no plano atual");
-        }
+        planLimitService.getRoadMapItems(user.getId());
 
         RoadMapItem roadMapItem = new RoadMapItem(data, user, rdm);
         roadMapItemRepository.save(roadMapItem);
@@ -117,10 +114,10 @@ public class RoadMapItemService {
 
     @Transactional
     public String generateWithAI(GPTCreateRoadMapItemRequestDTO dto, Long roadmapId) {
-
         User user = authenticationService.getUserAuthenticated();
-        if(user.getPlanType() == PlanType.FREE_TIER){
-            throw new CustomException("Usuário nao tem permissao para gerar RoadMaps");
+
+        if (!planLimitService.canMakeAICall(user)) {
+            throw new CustomException("Usuario não pode fazer mais chamadas com a IA - Limite Mensal Atingido");
         }
 
         RoadMap roadMap = roadMapRepository.findById(roadmapId)
@@ -130,6 +127,8 @@ public class RoadMapItemService {
             throw new CustomException("RoadMap informado nao pertence ao usuário");
         }
 
+
+
         try {
             GPTResponseDTO response = openAiService.generateRoadMap(dto);
 
@@ -138,6 +137,7 @@ public class RoadMapItemService {
                 roadMapItemRepository.save(entity);
             }
 
+            planLimitService.recordAICall(user);
             return "Gerado e salvo com sucesso";
 
         } catch (Exception e) {

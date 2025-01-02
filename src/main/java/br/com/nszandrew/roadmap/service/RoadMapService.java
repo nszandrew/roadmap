@@ -26,14 +26,12 @@ public class RoadMapService {
     private final AuthenticationService authenticationService;
     private final RoadMapItemRepository roadMapItemRepository;
     private final RoadMapRepository roadMapRepository;
+    private final PlanLimitService planLimitService;
 
     @Transactional
     public String createRoadMap(CreateRoadMapDTO data) {
         User user = authenticationService.getUserAuthenticated();
-        boolean userAlreadyHaveRoadmap = roadMapRepository.existsByUserId(user.getId());
-        if(userAlreadyHaveRoadmap && !authenticationService.userHasPremiumPermission(user)){
-            throw new CustomException("Usuário ja excedeu o limite de roadmaps no planos dele");
-        }
+        planLimitService.getQuantityRoadMapByUser(user.getId());
 
         RoadMap roadMap = RoadMap.builder()
                 .title(data.title())
