@@ -8,6 +8,7 @@ import br.com.nszandrew.roadmap.service.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody LoginDTO data) {
+    public ResponseEntity<Object> login(@RequestBody LoginDTO data) {
         try {
             var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var authentication = authenticationManager.authenticate(authToken);
@@ -38,9 +39,10 @@ public class AuthenticationController {
             userRepository.save(user);
 
             return ResponseEntity.ok(new TokenResponseDTO(acessToken, refreshToken));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad credentials. Verify your Email and Password.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new TokenResponseDTO("Erro: " + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro. Please, try again later.");
         }
     }
 

@@ -53,7 +53,7 @@ public class AdminService implements UserDetailsService {
         userRepository.save(newUser);
 
         emailSender.sendVerifyEmail(newUser);
-        return "Usuario criado com sucesso!";
+        return "User successfully registered!";
     }
 
     @Transactional
@@ -114,7 +114,7 @@ public class AdminService implements UserDetailsService {
 
     private void verifyIfIsAdmin() {
         if(Boolean.FALSE.equals(authenticationService.userHasAdminPermission(authenticationService.getUserAuthenticated()))){
-            throw new CustomException("Acesso negado");
+            throw new CustomException("Access denied!");
         }
     }
 }

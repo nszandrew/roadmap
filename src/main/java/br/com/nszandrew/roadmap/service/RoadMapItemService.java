@@ -32,26 +32,22 @@ public class RoadMapItemService {
     public String createRoadMapItem(CreateRoadMapItem data) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap rdm = roadMapRepository.findById(data.roadMapId())
-                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmap id not found"));
 
         planLimitService.getRoadMapItems(user.getId());
 
         RoadMapItem roadMapItem = new RoadMapItem(data, user, rdm);
         roadMapItemRepository.save(roadMapItem);
-        return "RoadMapItem criado com sucesso";
-    }
-
-    public boolean userHas20RoadmapItems(User user) {
-        return roadMapItemRepository.countRoadmapItemsByUser(user) >= 20;
+        return "RoadMapItem created successfully";
     }
 
     @Transactional(readOnly = true)
     public RoadMapItemResponse getRoadMapItem(Long itemId, Long roadMapId) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findById(roadMapId)
-                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmap id not found"));
         RoadMapItem roadMapItem = roadMapItemRepository.findById(itemId)
-                .orElseThrow(() -> new CustomException("ID do RoadMapItem nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmapitem id not found"));
 
         if(!roadMap.getUser().getId().equals(user.getId()) || !roadMapItem.getRoadMap().getId().equals(roadMap.getId())){
             throw new CustomException("RoadMapItem nao pertence ao usuário ou ao roadmap informado");
@@ -64,7 +60,7 @@ public class RoadMapItemService {
     public List<RoadMapItemResponse> getAllRoadMapsItensByRoadMap(Long roadmapId){
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findById(roadmapId)
-                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmap id not found"));
 
         if(!roadMap.getUser().getId().equals(user.getId())){
             throw new CustomException("Esse RoadMap nao pertence ao usuário logado");
@@ -83,9 +79,9 @@ public class RoadMapItemService {
     public String editRoadMapItem(Long roadmapId, Long itemId, UpdateRoadMapItem data) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findById(roadmapId)
-                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmap id not found"));
         RoadMapItem roadMapItem = roadMapItemRepository.findById(itemId)
-                .orElseThrow(() -> new CustomException("ID do RoadMapItem nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmapitem id not found"));
 
         if(!roadMap.getUser().getId().equals(user.getId()) || !roadMapItem.getRoadMap().getId().equals(roadMap.getId())){
             throw new CustomException("RoadMapItem nao pertence ao usuário ou ao roadmap informado");
@@ -93,23 +89,23 @@ public class RoadMapItemService {
 
         roadMapItem.editRoadMapItem(data);
         roadMapItemRepository.save(roadMapItem);
-        return "RoadMap Item Editado com sucesso";
+        return "RoadMap Item edited successfully";
     }
 
     @Transactional
     public String removeRoadMapItem(Long roadmapId, Long itemId) {
         User user = authenticationService.getUserAuthenticated();
         RoadMap roadMap = roadMapRepository.findById(roadmapId)
-                .orElseThrow(() -> new CustomException("ID do RoadMap nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmap id not found"));
         RoadMapItem roadMapItem = roadMapItemRepository.findById(itemId)
-                .orElseThrow(() -> new CustomException("ID do RoadMapItem nao encontrado"));
+                .orElseThrow(() -> new CustomException("Roadmapitem id not found"));
 
         if(!roadMap.getUser().getId().equals(user.getId()) || !roadMapItem.getRoadMap().getId().equals(roadMap.getId())){
             throw new CustomException("RoadMapItem nao pertence ao usuário ou ao roadmap informado");
         }
 
         roadMapItemRepository.delete(roadMapItem);
-        return "RoadMap Item removido com sucesso";
+        return "RoadMap Item deleted successfully";
     }
 
     @Transactional
