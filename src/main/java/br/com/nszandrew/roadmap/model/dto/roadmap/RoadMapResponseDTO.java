@@ -17,3 +17,4 @@ public record RoadMapResponseDTO(Long id,
         this(roadMap.getId(), roadMap.getTitle(), roadMap.getDescription(), roadMap.getActive(), roadMap.getCreatedAt(), new UserDetailsDTO(user));
     }
 }
+

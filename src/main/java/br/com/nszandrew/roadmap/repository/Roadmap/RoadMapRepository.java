@@ -4,6 +4,7 @@ import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -19,4 +20,7 @@ public interface RoadMapRepository extends JpaRepository<RoadMap, Long> {
     RoadMap findByUser(User user);
 
     RoadMap findByIdAndUser(Long id, User user);
+
+    @Query("SELECT r FROM RoadMap r WHERE r.title = :title and r.user = :user")
+    RoadMap verifyttitlealreadyexists(@Param("title") String title, @Param("user") User user);
 }

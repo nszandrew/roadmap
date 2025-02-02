@@ -3,6 +3,7 @@ package br.com.nszandrew.roadmap.service;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.roadmap.CreateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapTesteResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
@@ -29,9 +30,14 @@ public class RoadMapService {
     private final PlanLimitService planLimitService;
 
     @Transactional
-    public String createRoadMap(CreateRoadMapDTO data) {
+    public RoadMapTesteResponseDTO createRoadMap(CreateRoadMapDTO data) {
         User user = authenticationService.getUserAuthenticated();
         planLimitService.getQuantityRoadMapByUser(user.getId());
+
+       RoadMap verifytitle = roadMapRepository.verifyttitlealreadyexists(data.title(), user);
+       if (verifytitle.getTitle().equalsIgnoreCase(data.title())) {
+           throw new CustomException("Title already exists");
+       }
 
         RoadMap roadMap = RoadMap.builder()
                 .title(data.title())
@@ -41,7 +47,7 @@ public class RoadMapService {
                 .user(user)
                 .build();
         roadMapRepository.save(roadMap);
-        return "RoadMap criado com sucesso";
+        return new RoadMapTesteResponseDTO(roadMap);
     }
 
     @Transactional(readOnly = true)
