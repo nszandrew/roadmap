@@ -1,16 +1,21 @@
 package br.com.nszandrew.roadmap.controller;
 
 import br.com.nszandrew.roadmap.model.dto.user.LoginDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.user.TokenResponseDTO;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
+import br.com.nszandrew.roadmap.service.AdminService;
 import br.com.nszandrew.roadmap.service.TokenService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api")
@@ -19,11 +24,13 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final AdminService adminService;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, UserRepository userRepository) {
+    public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, UserRepository userRepository, AdminService adminService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.userRepository = userRepository;
+        this.adminService = adminService;
     }
 
     @PostMapping("/login")
@@ -44,6 +51,11 @@ public class AuthenticationController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro. Please, try again later.");
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody @Valid RegisterRequestDTO data, UriComponentsBuilder uriBuilder) {
+        return new ResponseEntity<>(adminService.register(data), HttpStatus.CREATED);
     }
 
 

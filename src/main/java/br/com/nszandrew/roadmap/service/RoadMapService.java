@@ -3,7 +3,7 @@ package br.com.nszandrew.roadmap.service;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.roadmap.CreateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapResponseDTO;
-import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapTesteResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapCreateResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMap;
 import br.com.nszandrew.roadmap.model.roadmap.RoadMapItem;
@@ -30,7 +30,7 @@ public class RoadMapService {
     private final PlanLimitService planLimitService;
 
     @Transactional
-    public RoadMapTesteResponseDTO createRoadMap(CreateRoadMapDTO data) {
+    public RoadMapCreateResponseDTO createRoadMap(CreateRoadMapDTO data) {
         User user = authenticationService.getUserAuthenticated();
         planLimitService.getQuantityRoadMapByUser(user.getId());
 
@@ -47,7 +47,7 @@ public class RoadMapService {
                 .user(user)
                 .build();
         roadMapRepository.save(roadMap);
-        return new RoadMapTesteResponseDTO(roadMap);
+        return new RoadMapCreateResponseDTO(roadMap);
     }
 
     @Transactional(readOnly = true)

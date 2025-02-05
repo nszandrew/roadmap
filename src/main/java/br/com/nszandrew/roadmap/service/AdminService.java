@@ -3,6 +3,7 @@ package br.com.nszandrew.roadmap.service;
 import br.com.nszandrew.roadmap.infra.email.EmailSender;
 import br.com.nszandrew.roadmap.infra.exceptions.CustomException;
 import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
+import br.com.nszandrew.roadmap.model.dto.user.RegisterResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
 import br.com.nszandrew.roadmap.model.user.PlanType;
 import br.com.nszandrew.roadmap.model.user.Role;
@@ -39,7 +40,7 @@ public class AdminService implements UserDetailsService {
     }
 
     @Transactional
-    public String register(@Valid RegisterRequestDTO data) {
+    public RegisterResponseDTO register(@Valid RegisterRequestDTO data) {
         Optional<User> user = userRepository.findByEmailIgnoreCaseAndIsVerifyEmailTrue(data.email());
 
         if(user.isPresent()){
@@ -53,7 +54,7 @@ public class AdminService implements UserDetailsService {
         userRepository.save(newUser);
 
         emailSender.sendVerifyEmail(newUser);
-        return "User successfully registered!";
+        return new RegisterResponseDTO(true, "User successfully registered!");
     }
 
     @Transactional

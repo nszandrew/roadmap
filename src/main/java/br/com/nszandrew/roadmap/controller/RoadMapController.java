@@ -2,7 +2,7 @@ package br.com.nszandrew.roadmap.controller;
 
 import br.com.nszandrew.roadmap.model.dto.roadmap.CreateRoadMapDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapResponseDTO;
-import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapTesteResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.roadmap.RoadMapCreateResponseDTO;
 import br.com.nszandrew.roadmap.model.dto.roadmap.UpdateRoadMapDTO;
 import br.com.nszandrew.roadmap.service.RoadMapService;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public class RoadMapController {
     }
 
     @PostMapping("/createroadmap")
-    public ResponseEntity<RoadMapTesteResponseDTO> createRoadMap(@RequestBody @Valid CreateRoadMapDTO data){
+    public ResponseEntity<RoadMapCreateResponseDTO> createRoadMap(@RequestBody @Valid CreateRoadMapDTO data){
         return new ResponseEntity<>(roadMapService.createRoadMap(data), HttpStatus.CREATED);
     }
 
