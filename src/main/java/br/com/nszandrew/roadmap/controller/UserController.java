@@ -1,6 +1,7 @@
 package br.com.nszandrew.roadmap.controller;
 
 import br.com.nszandrew.roadmap.model.dto.user.UserDetailsDTO;
+import br.com.nszandrew.roadmap.model.dto.user.UserInfoResponse;
 import br.com.nszandrew.roadmap.model.dto.user.UserUpdateDTO;
 import br.com.nszandrew.roadmap.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/me")
-    public ResponseEntity<UserDetailsDTO> getUser(){
-        return new ResponseEntity<>(userService.getUser(), HttpStatus.OK);
-    }
-
     @PutMapping("/user/edit")
     public ResponseEntity<String> editUser(@RequestBody UserUpdateDTO data){
         return new ResponseEntity<>(userService.editUser(data), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/info")
+    public ResponseEntity<UserInfoResponse> getUserInfo(){
+        return new ResponseEntity<>(userService.getUserInfo(), HttpStatus.OK);
     }
 }
