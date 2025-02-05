@@ -1,14 +1,12 @@
 package br.com.nszandrew.roadmap.controller;
 
-import br.com.nszandrew.roadmap.model.dto.user.LoginDTO;
-import br.com.nszandrew.roadmap.model.dto.user.RegisterRequestDTO;
-import br.com.nszandrew.roadmap.model.dto.user.RegisterResponseDTO;
-import br.com.nszandrew.roadmap.model.dto.user.TokenResponseDTO;
+import br.com.nszandrew.roadmap.model.dto.user.*;
 import br.com.nszandrew.roadmap.model.user.User;
 import br.com.nszandrew.roadmap.repository.user.UserRepository;
 import br.com.nszandrew.roadmap.service.AdminService;
 import br.com.nszandrew.roadmap.service.TokenService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -40,12 +39,12 @@ public class AuthenticationController {
             var authentication = authenticationManager.authenticate(authToken);
             User user = (User) authentication.getPrincipal();
 
-            String acessToken = tokenService.generateToken(user);
+            String accessToken = tokenService.generateToken(user);
             String refreshToken = tokenService.generateRefreshToken(user);
             user.setRefreshToken(refreshToken);
             userRepository.save(user);
 
-            return ResponseEntity.ok(new TokenResponseDTO(acessToken, refreshToken));
+            return ResponseEntity.ok(new TokenResponseDTO(accessToken, refreshToken));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad credentials. Verify your Email and Password.");
         } catch (Exception e) {
@@ -70,5 +69,14 @@ public class AuthenticationController {
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
         return ResponseEntity.ok(new TokenResponseDTO(acessToken, refreshTokenNew));
+    }
+
+    @PostMapping("/verify-token")
+    public ResponseEntity<Boolean> verifyToken(@RequestBody VerifyToken token) {
+        boolean isValid = tokenService.tokenVerifyIsValid(token.token());
+        if(isValid) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
     }
 }

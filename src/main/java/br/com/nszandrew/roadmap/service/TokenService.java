@@ -61,6 +61,21 @@ public class TokenService {
         }
     }
 
+    public boolean tokenVerifyIsValid(String token){
+        DecodedJWT decodedJWT;
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer("nszandrew")
+                    .build();
+
+            verifier.verify(token);
+            return true;
+        } catch (JWTVerificationException exception){
+            return false;
+        }
+    }
+
     private Instant expiresIn(Integer minutes){
         return LocalDateTime.now().plusMinutes(minutes).toInstant(ZoneOffset.of("-03:00"));
     }
